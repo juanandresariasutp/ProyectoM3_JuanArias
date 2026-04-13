@@ -1,0 +1,14 @@
+{
+  "name": "vegeta-chat-spa",
+  "version": "1.0.0",
+  "description": "Vegeta Chat SPA con Google Gemini",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "test": "vitest"
+  },
+  "devDependencies": {
+    "vitest": "^1.0.0",
+    "vite": "^5.0.0"
+  }
+}
