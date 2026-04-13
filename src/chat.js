@@ -1,3 +1,5 @@
+import { VEGETA_SYSTEM_PROMPT } from './utils.js';
+
 let conversationHistory = [];
 
 const messagesDiv = document.getElementById('messages');
@@ -15,7 +17,25 @@ function renderMessage(role, text) {
   messagesDiv.scrollTop = messagesDiv.scrollHeight;
 }
 
-function handleSend() {
+// Función para mostrar indicador de carga
+function renderLoading() {
+  const msgEl = document.createElement('p');
+  msgEl.classList.add('message', 'vegeta');
+  msgEl.id = 'loading-message';
+  msgEl.textContent = 'Escribiendo...';
+  messagesDiv.appendChild(msgEl);
+  messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+// Función para remover el indicador de carga
+function removeLoading() {
+  const loadingEl = document.getElementById('loading-message');
+  if (loadingEl) {
+    loadingEl.remove();
+  }
+}
+
+async function handleSend() {
   const text = userInput.value.trim();
   if (!text) return;
 
@@ -23,19 +43,50 @@ function handleSend() {
   conversationHistory.push({ role: 'user', text });
   renderMessage('user', text);
   
-  // Limpiar el input
+  // Limpiar el input y deshabilitar botón y campo
   userInput.value = '';
+  userInput.disabled = true;
+  sendBtn.disabled = true;
 
-  // Simular respuesta de Vegeta
-  setTimeout(() => {
-    const vegetaReply = "¡No me des órdenes, sabandija!";
+  renderLoading();
+
+  try {
+    const response = await fetch('/api/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        messages: conversationHistory,
+        systemPrompt: VEGETA_SYSTEM_PROMPT
+      })
+    });
+
+    removeLoading();
+
+    if (!response.ok) {
+      throw new Error(`Error en la red: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const vegetaReply = data.reply;
+
     conversationHistory.push({ role: 'vegeta', text: vegetaReply });
     renderMessage('vegeta', vegetaReply);
-  }, 600);
+  } catch (error) {
+    removeLoading();
+    console.error('Error al conectar con la API:', error);
+    renderMessage('vegeta', 'Ocurrió un error. Vegeta no responde en este momento... (Falla de red)');
+  } finally {
+    // Rehabilitar los controles
+    userInput.disabled = false;
+    sendBtn.disabled = false;
+    userInput.focus();
+  }
 }
 
 // Listeners
 sendBtn.addEventListener('click', handleSend);
 userInput.addEventListener('keypress', (e) => {
-  if (e.key === 'Enter') handleSend();
+  if (e.key === 'Enter' && !sendBtn.disabled) handleSend();
 });
