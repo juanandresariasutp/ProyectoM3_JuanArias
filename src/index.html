@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vegeta Chat SPA</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav>
+    <a href="#/home">Home</a>
+    <a href="#/chat">Chat</a>
+    <a href="#/about">About</a>
+  </nav>
+
+  <section id="home">
+    <h1>Inicio</h1>
+    <p>Bienvenido. Prepárate para hablar con el Príncipe de los Saiyajin.</p>
+    <a href="#/chat"><button>Ir al Chat</button></a>
+  </section>
+
+  <section id="chat" style="display: none;">
+    <div id="messages"></div>
+    <input type="text" id="user-input" placeholder="Dime, insecto...">
+    <button id="send-btn">Enviar</button>
+  </section>
+
+  <section id="about" style="display: none;">
+    <h2>Acerca de</h2>
+    <p>Este es un proyecto SPA simulando un chat con Vegeta, usando la API de Gemini.</p>
+  </section>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
