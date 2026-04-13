@@ -1,3 +1,5 @@
+import './chat.js';
+
 const routes = {
   '/home': () => showSection('home'),
   '/chat': () => showSection('chat'),
