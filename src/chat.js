@@ -65,7 +65,9 @@ async function handleSend() {
     removeLoading();
 
     if (!response.ok) {
-      throw new Error(`Error en la red: ${response.status}`);
+      const errorPayload = await response.json().catch(() => ({}));
+      const backendMessage = errorPayload?.error || `Error en la red: ${response.status}`;
+      throw new Error(backendMessage);
     }
 
     const data = await response.json();
@@ -76,7 +78,7 @@ async function handleSend() {
   } catch (error) {
     removeLoading();
     console.error('Error al conectar con la API:', error);
-    renderMessage('vegeta', 'Ocurrió un error. Vegeta no responde en este momento... (Falla de red)');
+    renderMessage('vegeta', `Error: ${error.message}`);
   } finally {
     // Rehabilitar los controles
     userInput.disabled = false;

@@ -29,29 +29,44 @@ export default async function handler(req, res) {
       contents
     };
 
-    // Usando el modelo actual gemini-2.5-flash (el anterior gemini-pro/1.5-flash está descontinuado para tu cuenta)
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+    // Fallback entre modelos para evitar caídas por alta demanda.
+    const candidateModels = [
+      'gemini-2.5-flash',
+      'gemini-2.0-flash',
+      'gemini-2.0-flash-lite'
+    ];
 
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(geminiBody)
-    });
+    let lastError = null;
 
-    if (!response.ok) {
+    for (const model of candidateModels) {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(geminiBody)
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'No tengo respuesta para ti, insecto.';
+        return res.status(200).json({ reply });
+      }
+
       const errorData = await response.json();
-      console.error('Error de Gemini:', errorData);
-      return res.status(response.status).json({ error: 'Error comunicándose con Gemini.' });
+      lastError = { status: response.status, body: errorData, model };
+      console.error(`Error de Gemini (${model}):`, errorData);
+
+      // Reintentamos con otro modelo solo en errores temporales.
+      if (response.status !== 429 && response.status !== 503) {
+        return res.status(response.status).json({ error: 'Error comunicándose con Gemini.' });
+      }
     }
 
-    const data = await response.json();
-    
-    // Extraer la respuesta del objeto que devuelve Gemini
-    const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "No tengo respuesta para ti, insecto.";
-
-    return res.status(200).json({ reply });
+    console.error('Todos los modelos fallaron:', lastError);
+    return res.status(503).json({ error: 'Gemini está ocupado en este momento. Intenta de nuevo en unos segundos.' });
 
   } catch (error) {
     console.error('Error interno del servidor:', error);

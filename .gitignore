@@ -5,3 +5,4 @@ guia-commits.md
 node_modules/
 .env
 
+.vercel
