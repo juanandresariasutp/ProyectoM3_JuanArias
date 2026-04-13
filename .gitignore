@@ -1,0 +1,7 @@
+# Guías de desarrollo
+guia-vegeta-spa.md
+guia-commits.md
+
+node_modules/
+.env
+
