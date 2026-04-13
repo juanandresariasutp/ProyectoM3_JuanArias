@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/(.*\\.(css|js))",
+      "destination": "/src/$1"
+    },
+    {
       "source": "/((?!api/).*)",
       "destination": "/src/index.html"
     }
