@@ -29,7 +29,8 @@ export default async function handler(req, res) {
       contents
     };
 
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+    // Usando el modelo actual gemini-2.5-flash (el anterior gemini-pro/1.5-flash está descontinuado para tu cuenta)
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
 
     const response = await fetch(url, {
       method: 'POST',
