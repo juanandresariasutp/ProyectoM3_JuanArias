@@ -1,4 +1,4 @@
-import './chat.js';
+import './chat-ui.js';
 
 const routes = {
   '/home': () => showSection('home'),
