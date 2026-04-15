@@ -37,14 +37,23 @@ function handleRoute() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Interceptar clicks en los enlaces de navegación
-  document.querySelectorAll('nav a').forEach(link => {
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-      // Obtenemos la ruta del enlace
-      const path = link.getAttribute('href');
-      navigate(path);
-    });
+  // Interceptar todos los links internos para navegación SPA
+  document.addEventListener('click', (e) => {
+    const link = e.target.closest('a[href]');
+    if (!link) {
+      return;
+    }
+
+    const path = link.getAttribute('href');
+    const isModifiedClick = e.metaKey || e.ctrlKey || e.shiftKey || e.altKey;
+    const isExternal = !path || !path.startsWith('/');
+
+    if (isModifiedClick || isExternal || link.target === '_blank') {
+      return;
+    }
+
+    e.preventDefault();
+    navigate(path);
   });
 
   // Manejar navegación con los botones back/forward del navegador
