@@ -28,6 +28,7 @@ Incluye navegación SPA con History API, backend serverless en Vercel para prote
 - [Tests Unitarios con Vitest](#tests)
 - [Despliegue en Vercel](#despliegue)
 - [Uso de IA Durante el Desarrollo](#uso-ia)
+- [Documentación IA](Documentación%20IA.md)
 - [Autor](#autor)
 
 ---
@@ -195,6 +196,9 @@ Estado actual:
 ## 🤖 Uso de IA Durante el Desarrollo <a id="uso-ia"></a>
 
 Se usó GitHub Copilot para acelerar implementación y refactorización.
+
+Registro completo del uso de IA en el proyecto:
+- [Documentación IA](Documentación%20IA.md)
 
 Prompts usados como referencia:
 - "Implementa routing SPA con History API para /home, /chat y /about"
